@@ -1,0 +1,363 @@
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
+
+type Error {
+  code: String!
+}
+
+type Query {
+  _empty: String
+  GetGlobalVariable(id: Int!): GlobalVariable
+  GetGlobalVariableByName(name: String!): GlobalVariable
+  ListGlobalVariables: [GlobalVariable!]!
+  SearchGlobalVariablesByName(keyword: String!): [GlobalVariable!]!
+  GetLog(id: Int!): LogQueryResponse
+  ListLogs: LogsListQueryResponse
+  GetMessage(id: Int!): MessageQueryResponse
+  ListMessages: MessagesListQueryResponse
+  GetMyMessages: [Message!]!
+  GetRole(id: Int!): Role!
+  ListRoles: [Role!]!
+  GetStorageCategory(id: Int!): StorageCategory
+  ListStorageCategories: [StorageCategory!]!
+  SearchStorageCategoriesByName(keyword: String!): [StorageCategory!]!
+  GetStorageCategoryFormField(id: Int!): StorageCategoryFormField
+  ListStorageCategoryFormFields(skip: Int!, take: Int!, orderBy: String!, orderType: String!): [StorageCategoryFormField!]!
+  SearchStorageCategoryFormFieldsByName(keyword: String!): [StorageCategoryFormField!]!
+  ListStorageItems: [StorageItem!]!
+  GetStorageItemsByCategory(category: Int!): [StorageItem!]!
+  GetStorageItem(id: Int!): StorageItem!
+  GetStorageItemControllerBlueprint(id: Int!): StorageItemControllerBlueprint!
+  ListStorageItemControllerBlueprints: [StorageItemControllerBlueprint!]!
+  SearchStorageItemControllerBlueprintsByName(id: Int!): [StorageItemControllerBlueprint!]!
+  GetStorageItemControllerInstance(id: Int!): StorageItemControllerInstance!
+  ListStorageItemControllerInstances: [StorageItemControllerInstance!]!
+  ListStorageItemRecords: [StorageItemRecord!]!
+  GetStorageItemRecord(id: Int!): StorageItemRecord!
+  ListStorageItemRelations: [StorageItemRelation!]!
+  GetStorageItemRelation(id: Int!): StorageItemRelation!
+  GetUser(id: Int!): User
+  ListUsers: [User!]!
+  CurrentUser: User
+}
+
+type Mutation {
+  _empty: String
+  CreateGlobalVariable(input: GlobalVariableMutationInput!): GlobalVariableMutationResponse!
+  UpdateGlobalVariable(id: Int!, input: GlobalVariableMutationInput!): GlobalVariableMutationResponse!
+  DeleteGlobalVariable(id: Int!): GlobalVariableMutationResponse!
+  CreateLog(input: LogMutationInput): LogMutationResponse!
+  DeleteLog(id: Int!): LogMutationResponse!
+  CreateMessage(input: MessageMutationInput!): MessageMutationResponse!
+  DeleteMessage(id: Int!): MessageMutationResponse!
+  MarkMessageAsSeen: MessageMutationResponse!
+  CreateRole(input: RoleMutationInput!): RoleMutationResponse!
+  UpdateRole(id: Int!, input: RoleMutationInput!): RoleMutationResponse!
+  DeleteRole(id: Int!): RoleMutationResponse!
+  CreateStorageCategory(input: StorageCategoryMutationInput!): StorageCategoryMutationResponse!
+  UpdateStorageCategory(id: Int!, input: StorageCategoryMutationInput!): StorageCategoryMutationResponse!
+  DeleteStorageCategory(id: Int!): StorageCategoryMutationResponse!
+  CreateStorageCategoryFormField(input: StorageCategoryFormFieldMutationInput!): StorageCategoryFormFieldMutationResponse!
+  UpdateStorageCategoryFormField(id: Int!, input: StorageCategoryFormFieldMutationInput!): StorageCategoryFormFieldMutationResponse!
+  DeleteStorageCategoryFormField(id: Int!): StorageCategoryFormFieldMutationResponse!
+  CreateStorageItem(input: StorageItemMutationInput!): StorageItemMutationResponse!
+  UpdateStorageItem(id: Int!, input: StorageItemMutationInput!): StorageItemMutationResponse!
+  DeleteStorageItem(id: Int!): StorageItemMutationResponse!
+  CreateStorageItemControllerBlueprint(input: StorageItemControllerBlueprintMutationInput!): StorageItemControllerBlueprintMutationResponse!
+  UpdateStorageItemControllerBlueprint(id: Int!, input: StorageItemControllerBlueprintMutationInput!): StorageItemControllerBlueprintMutationResponse!
+  DeleteStorageItemControllerBlueprint(id: Int!): StorageItemControllerBlueprintMutationResponse!
+  CreateStorageItemControllerInstance(input: StorageItemControllerInstanceMutationInput!): StorageItemControllerInstanceMutationResponse!
+  UpdateStorageItemControllerInstance(id: Int!, input: StorageItemControllerInstanceMutationInput!): StorageItemControllerInstanceMutationResponse!
+  DeleteStorageItemControllerInstance(id: Int!): StorageItemControllerInstanceMutationResponse!
+  CreateStorageItemRecord(input: StorageItemRecordMutationInput!): StorageItemRecordMutationResponse!
+  UpdateStorageItemRecord(id: Int!, input: StorageItemRecordMutationInput!): StorageItemRecordMutationResponse!
+  DeleteStorageItemRecord(id: Int!): StorageItemRecordMutationResponse!
+  CreateStorageItemRelation(input: StorageItemRelationMutationInput!): StorageItemRelationMutationResponse!
+  UpdateStorageItemRelation(id: Int!, input: StorageItemRelationMutationInput!): StorageItemRelationMutationResponse!
+  DeleteStorageItemRelation(id: Int!): StorageItemRelationMutationResponse!
+  CreateUser(input: UserMutationInput!): UserMutationResponse!
+  UpdateUser(id: Int!, input: UserMutationInput!): UserMutationResponse!
+  DeleteUser(id: Int!): UserMutationResponse!
+  Login(username: String!, password: String!): UserMutationResponse!
+}
+
+enum GenericValueType {
+  STRING
+  NUMBER
+  BOOLEAN
+  LIST
+}
+
+enum LogType {
+  NOTE
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+}
+
+enum MessageImportanceType {
+  URGENT
+  IMPORTANT
+  ROUTINE
+}
+
+enum PermissionType {
+  SUDO
+  WRITE_STORAGE_CATEGORY
+  WRITE_STORAGE_CATEGORY_FORM_FIELD
+  WRITE_STORAGE_ITEM
+  WRITE_STORAGE_ITEM_RECORD
+  WRITE_STORAGE_ITEM_CONTROLLER
+  WRITE_STORAGE_RELATION
+  WRITE_USER
+  WRITE_ROLE
+  READ_MESSAGES
+  READ_LOGS
+}
+
+type GlobalVariable {
+  id: ID!
+  name: String!
+  type: GenericValueType!
+  value: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+union GlobalVariableMutationResponse = GlobalVariable | Error
+
+input GlobalVariableMutationInput {
+  name: String!
+  type: GenericValueType!
+  value: String!
+}
+
+type Log {
+  id: ID!
+  type: String!
+  message: String!
+  user: User!
+  createdAt: String!
+}
+
+union LogsListQueryResponse = LogsList | Error
+
+union LogQueryResponse = Log | Error
+
+type LogsList {
+  list: [Log!]!
+}
+
+union LogMutationResponse = Log | Error
+
+input LogMutationInput {
+  type: LogType!
+  message: String!
+  userId: Int!
+}
+
+type Message {
+  id: ID!
+  type: MessageImportanceType!
+  title: String!
+  content: String!
+  seen: Boolean!
+  sender: User!
+  recipient: User!
+  createdAt: String!
+  updatedAt: String!
+}
+
+union MessagesListQueryResponse = MessagesList | Error
+
+union MessageQueryResponse = Message | Error
+
+type MessagesList {
+  list: [Message!]!
+}
+
+union MessageMutationResponse = Message | Error
+
+input MessageMutationInput {
+  type: MessageImportanceType!
+  content: String!
+  senderId: Int!
+  recipientId: Int!
+}
+
+type Role {
+  id: ID!
+  name: String!
+  permissions: [PermissionType!]!
+  users: [Role]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+union RoleMutationResponse = Role | Error
+
+input RoleMutationInput {
+  name: String!
+  permissions: [PermissionType!]!
+}
+
+type StorageCategory {
+  id: ID!
+  name: String!
+  parent: StorageCategory
+  fields: [StorageCategoryFormField!]!
+  inheritedFields: [StorageCategoryFormField!]!
+  children: [StorageCategory!]!
+  items: [StorageItem!]!
+  nestedItems: [StorageItem!]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+union StorageCategoryMutationResponse = StorageCategory | Error
+
+input StorageCategoryMutationInput {
+  name: String!
+  parentId: Int
+  fields: [Int!]!
+}
+
+type StorageCategoryFormField {
+  id: ID!
+  name: String!
+  label: String!
+  type: GenericValueType!
+  required: Boolean!
+  default: String!
+  format: String!
+  properties: JSONObject
+  categories: [StorageCategory!]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+union StorageCategoryFormFieldMutationResponse = StorageCategoryFormField | Error
+
+input StorageCategoryFormFieldMutationInput {
+  name: String!
+  label: String!
+  type: GenericValueType!
+  required: Boolean!
+  default: String!
+  format: String!
+  properties: JSONObject
+}
+
+type StorageItem {
+  id: ID!
+  properties: JSONObject!
+  quantity: Int!
+  category: StorageCategory!
+  records: [StorageItemRecord!]!
+  relations: [StorageItemRelation!]!
+  lhsRelations: [StorageItemRelation!]!
+  rhsRelations: [StorageItemRelation!]!
+  controllers: [StorageItemControllerInstance!]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+union StorageItemMutationResponse = StorageItem | Error
+
+input StorageItemMutationInput {
+  categoryId: Int!
+  properties: JSONObject!
+}
+
+type StorageItemControllerBlueprint {
+  id: ID!
+  name: String!
+  script: String!
+  instances: [StorageItemControllerInstance!]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+union StorageItemControllerBlueprintMutationResponse = StorageItemControllerBlueprint | Error
+
+input StorageItemControllerBlueprintMutationInput {
+  name: String!
+  script: String!
+}
+
+type StorageItemControllerInstance {
+  id: ID!
+  blueprint: StorageItemControllerBlueprint!
+  parameters: JSONObject
+  createdAt: String!
+  updatedAt: String!
+}
+
+union StorageItemControllerInstanceMutationResponse = StorageItemControllerInstance | Error
+
+input StorageItemControllerInstanceMutationInput {
+  blueprintId: Int!
+  parameters: JSONObject
+}
+
+type StorageItemRecord {
+  id: ID!
+  item: StorageItem!
+  quantity: Int!
+  createdAt: String!
+  updatedAt: String!
+}
+
+union StorageItemRecordMutationResponse = StorageItemRecord | Error
+
+input StorageItemRecordMutationInput {
+  item: Int!
+  quantity: Int!
+}
+
+type StorageItemRelation {
+  id: ID!
+  name: String!
+  mutual: Boolean!
+  lhs: StorageItem!
+  rhs: StorageItem!
+  createdAt: String!
+  updatedAt: String!
+}
+
+union StorageItemRelationMutationResponse = StorageItemRelation | Error
+
+input StorageItemRelationMutationInput {
+  name: String!
+  mutual: Boolean!
+  lhsItemId: Int!
+  rhsItemId: Int!
+}
+
+type User {
+  id: ID!
+  username: String!
+  role: Role!
+  logs: [Log!]!
+  sentMessages: MessagesListQueryResponse!
+  receivedMessages: MessagesListQueryResponse
+  jwt: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+union UserMutationResponse = User | Error
+
+input UserMutationInput {
+  username: String!
+  password: String!
+  roleId: Int!
+}
