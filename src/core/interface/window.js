@@ -19,7 +19,7 @@ export default class Window {
     const src = `../../views/${this.properties.title}/${
       this.menu === null ? 'index' : this.menu.selectedItem
     }.svelte?${new Date().getTime()}`;
-    this.view.set((await import(src)).default);
+    this.view.set((await import(src.toLocaleLowerCase())).default);
     this.properties.setTitle(
       this.properties.title +
         '  ❱  ' +
