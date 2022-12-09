@@ -14,6 +14,8 @@
     everything,
   } from '../../../core/providers/apiClientGenerator';
 
+  export let window, loaded, data;
+
   function arraymove(arr, fromIndex, toIndex) {
     var element = arr[fromIndex];
     arr.splice(fromIndex, 1);
@@ -71,7 +73,7 @@
           if (category.code === 'P2002') {
             notifications.error('A category with exact same name already exists in this directory !');
           } else {
-            notifications.error('An error occured while creating category !');
+            notifications.error('An error occurred while creating category !');
           }
         }
       } else {
@@ -103,7 +105,7 @@
           if (category.code === 'P2002') {
             notifications.error('A category with exact same name already exists in this directory !');
           } else {
-            notifications.error('An error occured while updating category !');
+            notifications.error('An error occurred while updating category !');
           }
         }
       }
@@ -126,7 +128,11 @@
           notifications.success('Category deleted successfully !');
           action.cancel();
         } else {
-          notifications.error('An error occured while deleting category !')
+          if (category.code === 'P2003') {
+            notifications.error('Can not delete this, some item is currently using this category !');
+          } else {
+            notifications.error('An error occurred while deleting category !')
+          }
         }
       }
     },
@@ -163,6 +169,7 @@
     })).children.map(child => {
       return {...child, final: child.children.length ? 'Category' : 'Final'}
     });
+    $loaded = true;
   }
 
   // dont remove location ($ reactivity)
@@ -250,19 +257,6 @@
         />
         <span>{category.name}</span>
         <div class="absolute left-72 vertically-center flex gap-3">
-          {#if category.form}
-            <div
-              class="flex px-2 rounded-full cursor-pointer border border-[#eee]"
-            >
-              <div class="flex text-xs gap-2">
-                <ion-icon
-                  class="relative top-0.5"
-                  name="document-text-outline"
-                />
-                <span>{category.form.name}</span>
-              </div>
-            </div>
-          {/if}
           {#if category.children.length}
             <div
               class="flex px-2 rounded-full cursor-pointer border border-[#eee]"
@@ -295,13 +289,37 @@
         </div>
         <div
           class="vertically-center right-2 flex p-1 rounded-full cursor-pointer hover:bg-gray-200"
-          title="open"
+          title="Open"
           on:click|stopPropagation={() => {
             modal.edit(category.id);
           }}
         >
           <ion-icon name="ellipsis-vertical-outline" />
         </div>
+        <div
+          class="vertically-center right-8 flex p-1 rounded-full cursor-pointer hover:bg-gray-200"
+          title="See Items"
+          on:click|stopPropagation={() => {
+            window.load('Items/Explore', { categoryId: category.id });
+          }}
+        >
+          <ion-icon name="file-tray-stacked-outline" />
+        </div>
+        {#if !category.children.length}
+          <div
+            class="vertically-center right-14 flex p-1 rounded-full cursor-pointer hover:bg-gray-200"
+            title="Add Item In This Category"
+            on:click|stopPropagation={() => {
+              window.load('Items/Explore', { insert: category.id });
+            }}
+          >
+            <ion-icon name="add-outline" />
+          </div>
+        {/if}
+      </div>
+    {:else}
+      <div class="w-full text-gray-400 text-sm mt-2 text-center">
+        No Categories Exists (change filter setting or add one)
       </div>
     {/each}
   </div>
@@ -378,7 +396,7 @@
                 />
                 <div>{field.name}</div>
                 <div
-                  class="absolute flex right-2 top-1/2 -translate-y-1/2 rounded-full cursor-pointer hover:bg-gray-200"
+                  class="absolute flex right-2 top-1/2 -translate-y-1/2 rounded-full cursor-pointer hover:bg-red-200"
                   title="Delete"
                   on:click={() => {
                     deleteField(field);
@@ -387,8 +405,8 @@
                   <ion-icon name="close-outline" />
                 </div>
                 <div
-                  class="absolute flex right-5 top-1/2 -translate-y-1/2 rounded-full cursor-pointer hover:bg-gray-200"
-                  title="Delete"
+                  class="absolute flex right-6 top-1/2 -translate-y-1/2 rounded-full cursor-pointer hover:bg-gray-200"
+                  title="Move Down"
                   on:click={() => {
                     arraymove(formFields, i, i + 1);
                     arraymove(form.fields, i, i + 1);
@@ -398,8 +416,8 @@
                   <ion-icon name="chevron-down-outline" />
                 </div>
                 <div
-                  class="absolute flex right-8 top-1/2 -translate-y-1/2 rounded-full cursor-pointer hover:bg-gray-200"
-                  title="Delete"
+                  class="absolute flex right-10 top-1/2 -translate-y-1/2 rounded-full cursor-pointer hover:bg-gray-200"
+                  title="Move Up"
                   on:click={() => {
                     arraymove(formFields, i, i - 1);
                     arraymove(form.fields, i, i - 1);
@@ -412,7 +430,8 @@
             {/each}
           </div>
           <input
-            class:rounded-b-md={fieldsSearchInput === ''}
+            class:rounded-b-md={fieldsSearchInput === '' &&
+              !fieldsSearchInputFocused}
             class="w-full border border-gray-100 bg-white px-2 pt-1 text-xs rounded-t-md outline-0"
             placeholder="Enter Field Name"
             type="text"

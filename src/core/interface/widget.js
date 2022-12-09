@@ -13,15 +13,16 @@ export default class Widget {
     this.onlyOneInstance = onlyOneInstance;
     this.window = window;
   }
-  run() {
+  run(selectedItem) {
     if (
       !this.onlyOneInstance ||
       !get(widgetManager.runningWidgets).includes(this)
     ) {
       widgetManager.runningWidgets.update((current) => [...current, this]);
     }
+    if (selectedItem) this.window.menu.selectedItem = selectedItem;
     this.window.load();
-    return this;
+    return this.window;
   }
   kill(self) {
     return () => {

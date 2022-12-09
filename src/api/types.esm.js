@@ -1179,6 +1179,9 @@ export default {
             "quantity": [
                 5
             ],
+            "description": [
+                3
+            ],
             "createdAt": [
                 3
             ],
@@ -1201,11 +1204,14 @@ export default {
             ]
         },
         "StorageItemRecordMutationInput": {
-            "item": [
+            "itemId": [
                 5
             ],
             "quantity": [
                 5
+            ],
+            "description": [
+                3
             ],
             "__typename": [
                 3

@@ -41,4 +41,14 @@ export default class Menu {
     this.items.push(new Item(this, title, icon, title));
     return this.items.at(-1);
   }
+  updateActiveItem() {
+    for (const item of this.items) {
+      item.active = false;
+      for (const subItem of item.subItems) {
+        if (this.selectedItem === subItem.path) {
+          subItem.element && subItem.element.click();
+        }
+      }
+    }
+  }
 }

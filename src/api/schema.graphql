@@ -312,6 +312,7 @@ type StorageItemRecord {
   id: ID!
   item: StorageItem!
   quantity: Int!
+  description: String
   createdAt: String!
   updatedAt: String!
 }
@@ -319,8 +320,9 @@ type StorageItemRecord {
 union StorageItemRecordMutationResponse = StorageItemRecord | Error
 
 input StorageItemRecordMutationInput {
-  item: Int!
+  itemId: Int!
   quantity: Int!
+  description: String
 }
 
 type StorageItemRelation {

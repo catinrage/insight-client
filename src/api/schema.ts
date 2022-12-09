@@ -245,6 +245,7 @@ export interface StorageItemRecord {
     id: Scalars['ID']
     item: StorageItem
     quantity: Scalars['Int']
+    description?: Scalars['String']
     createdAt: Scalars['String']
     updatedAt: Scalars['String']
     __typename: 'StorageItemRecord'
@@ -592,6 +593,7 @@ export interface StorageItemRecordRequest{
     id?: boolean | number
     item?: StorageItemRequest
     quantity?: boolean | number
+    description?: boolean | number
     createdAt?: boolean | number
     updatedAt?: boolean | number
     __typename?: boolean | number
@@ -604,7 +606,7 @@ export interface StorageItemRecordMutationResponseRequest{
     __typename?: boolean | number
 }
 
-export interface StorageItemRecordMutationInput {item: Scalars['Int'],quantity: Scalars['Int']}
+export interface StorageItemRecordMutationInput {itemId: Scalars['Int'],quantity: Scalars['Int'],description?: (Scalars['String'] | null)}
 
 export interface StorageItemRelationRequest{
     id?: boolean | number
@@ -1284,6 +1286,7 @@ export interface StorageItemRecordPromiseChain{
     id: ({get: (request?: boolean|number, defaultValue?: Scalars['ID']) => Promise<Scalars['ID']>}),
     item: (StorageItemPromiseChain & {get: <R extends StorageItemRequest>(request: R, defaultValue?: FieldsSelection<StorageItem, R>) => Promise<FieldsSelection<StorageItem, R>>}),
     quantity: ({get: (request?: boolean|number, defaultValue?: Scalars['Int']) => Promise<Scalars['Int']>}),
+    description: ({get: (request?: boolean|number, defaultValue?: (Scalars['String'] | undefined)) => Promise<(Scalars['String'] | undefined)>}),
     createdAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
     updatedAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>})
 }
@@ -1292,6 +1295,7 @@ export interface StorageItemRecordObservableChain{
     id: ({get: (request?: boolean|number, defaultValue?: Scalars['ID']) => Observable<Scalars['ID']>}),
     item: (StorageItemObservableChain & {get: <R extends StorageItemRequest>(request: R, defaultValue?: FieldsSelection<StorageItem, R>) => Observable<FieldsSelection<StorageItem, R>>}),
     quantity: ({get: (request?: boolean|number, defaultValue?: Scalars['Int']) => Observable<Scalars['Int']>}),
+    description: ({get: (request?: boolean|number, defaultValue?: (Scalars['String'] | undefined)) => Observable<(Scalars['String'] | undefined)>}),
     createdAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
     updatedAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>})
 }

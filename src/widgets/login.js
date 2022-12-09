@@ -1,5 +1,5 @@
-import Widget from '../interface/widget';
-import Window from '../interface/window';
+import Widget from '../core/interface/widget';
+import Window from '../core/interface/window';
 
 const LoginWindow = new Window('Login', 'person-circle', '60rem', '40rem');
 

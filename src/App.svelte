@@ -1,5 +1,3 @@
-<svelte:options accessors />
-
 <script>
   
   import notifications from './assets/dialogs/notification/notification';
@@ -24,7 +22,11 @@
       {...widget.window.properties}
       view={widget.window.view}
       menu={widget.window.menu}
+      loaded={widget.window.loaded}
+      loading={widget.window.loading}
       kill={widget.kill(widget)}
+      window={widget.window}
+      data={widget.window.data}
       bind:setTitle={widget.window.properties.setTitle}
     />
   {/each}

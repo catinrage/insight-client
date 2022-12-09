@@ -1,8 +1,8 @@
-import Widget from '../interface/widget';
-import Window from '../interface/window';
-import Menu from '../interface/menu';
+import Widget from '../core/interface/widget';
+import Window from '../core/interface/window';
+import Menu from '../core/interface/menu';
 
-const StorageWindowMenu = new Menu('Items/Explore');
+const StorageWindowMenu = new Menu('Categories/Explore');
 StorageWindowMenu.insert('Categories', 'apps-outline')
   .insert('Explore', 'folder-open-outline')
   .insert('Fields', 'create-outline');
@@ -11,7 +11,7 @@ StorageWindowMenu.insert('Items', 'file-tray-stacked-outline')
   .insert('Relations', 'git-merge-outline')
   .insert('Controllers', 'browsers-outline');
 StorageWindowMenu.insert('Repository', 'server-outline')
-  .insert('Records', 'document-text-outline')
+  .insert('Records', 'receipt-outline')
   .insert('Reports', 'stats-chart-outline');
 
 const StorageWindow = new Window(

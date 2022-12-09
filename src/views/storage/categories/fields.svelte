@@ -10,12 +10,15 @@
     everything,
   } from '../../../core/providers/apiClientGenerator';
 
+  export let window, loaded, data;
+
   let fields = [];
 
   async function loadFormFieldsFromDatabase() {
     fields = await client.chain.query
       .ListStorageCategoryFormFields({skip: 0, take: 1000, orderBy: 'updatedAt', orderType: 'desc'})
       .get({ ...everything });
+    $loaded = true;
   }
   loadFormFieldsFromDatabase();
 
@@ -67,7 +70,7 @@
           if (field.code === 'P2002') {
             notifications.error('A field with exact same name already exists !');
           } else {
-            notifications.error('An error occured while creating field !');
+            notifications.error('An error occurred while creating field !');
           }        
         }
       } else {
@@ -98,7 +101,7 @@
           if (field.code === 'P2002') {
             notifications.error('A field with exact same name already exists !');
           } else {
-            notifications.error('An error occured while updating field !');
+            notifications.error('An error occurred while updating field !');
           }
         }
       }
@@ -121,7 +124,11 @@
           notifications.success('Field deleted successfully !');
           action.cancel();
         } else {
-          notifications.error('An error occured while deleting field !')
+          if (field.code === 'P2003') {
+            notifications.error('Can not delete this, some category is currently using this field !');
+          } else {
+            notifications.error('An error occurred while deleting field !')
+          }
         }
       }
     },
@@ -175,6 +182,10 @@
             <ion-icon name="ellipsis-vertical-outline" />
           </div>
         </div>
+      </div>
+    {:else}
+      <div class="w-full text-gray-400 text-sm mt-2 text-center">
+        No Fields Exists (change filter setting or add one)
       </div>
     {/each}
   </div>

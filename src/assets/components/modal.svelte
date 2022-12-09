@@ -6,7 +6,7 @@
 </script>
 
 <div
-  class="fixed left-0 top-0 w-full h-full flex items-center justify-center bg-[#0005]"
+  class="fixed left-0 top-0 w-full h-full flex items-center justify-center bg-[#0005] z-[10]"
   transition:fade={{ duration: 75 }}
 >
   <div
