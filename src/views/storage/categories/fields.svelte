@@ -37,7 +37,6 @@
     label: '',
     type: 'NUMBER',
     required: true,
-    default: '',
     format: '',
     properties: {
       list: [],
@@ -139,7 +138,6 @@
         label: '',
         type: 'NUMBER',
         required: true,
-        default: '',
         format: '',
         properties: {
           list: [],
@@ -271,15 +269,6 @@
           type="text"
           placeholder="Required"
           bind:value={form.label}
-        />
-      </div>
-      <div class="text-xs w-full">
-        <div class="text-[11px] mb-1 font-medium">Default :</div>
-        <input
-          class="bg-white rounded-md outline-0 w-full px-2 py-2 border border-gray-100"
-          type="text"
-          placeholder="Optional"
-          bind:value={form.default}
         />
       </div>
       {#if form.type !== 'BOOLEAN'}

@@ -20,6 +20,7 @@ export default class Window {
     this.unsubscribe = (e) => {};
   }
   async load(selectedItem, data) {
+    if (get(this.loading)) return;
     if (selectedItem) {
       this.menu.selectedItem = selectedItem;
       this.data.set(data);

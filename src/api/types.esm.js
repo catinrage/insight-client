@@ -156,11 +156,23 @@ export default {
                     ]
                 }
             ],
-            "ListStorageItems": [
+            "GetStorageCategoryFormFieldGenerator": [
+                37,
+                {
+                    "id": [
+                        5,
+                        "Int!"
+                    ]
+                }
+            ],
+            "ListStorageCategoryFormFieldGenerators": [
                 37
             ],
+            "ListStorageItems": [
+                40
+            ],
             "GetStorageItemsByCategory": [
-                37,
+                40,
                 {
                     "category": [
                         5,
@@ -169,7 +181,7 @@ export default {
                 }
             ],
             "GetStorageItem": [
-                37,
+                40,
                 {
                     "id": [
                         5,
@@ -178,27 +190,6 @@ export default {
                 }
             ],
             "GetStorageItemControllerBlueprint": [
-                40,
-                {
-                    "id": [
-                        5,
-                        "Int!"
-                    ]
-                }
-            ],
-            "ListStorageItemControllerBlueprints": [
-                40
-            ],
-            "SearchStorageItemControllerBlueprintsByName": [
-                40,
-                {
-                    "id": [
-                        5,
-                        "Int!"
-                    ]
-                }
-            ],
-            "GetStorageItemControllerInstance": [
                 43,
                 {
                     "id": [
@@ -207,13 +198,19 @@ export default {
                     ]
                 }
             ],
-            "ListStorageItemControllerInstances": [
+            "ListStorageItemControllerBlueprints": [
                 43
             ],
-            "ListStorageItemRecords": [
-                46
+            "SearchStorageItemControllerBlueprintsByName": [
+                43,
+                {
+                    "id": [
+                        5,
+                        "Int!"
+                    ]
+                }
             ],
-            "GetStorageItemRecord": [
+            "GetStorageItemControllerInstance": [
                 46,
                 {
                     "id": [
@@ -222,10 +219,13 @@ export default {
                     ]
                 }
             ],
-            "ListStorageItemRelations": [
+            "ListStorageItemControllerInstances": [
+                46
+            ],
+            "ListStorageItemRecords": [
                 49
             ],
-            "GetStorageItemRelation": [
+            "GetStorageItemRecord": [
                 49,
                 {
                     "id": [
@@ -234,7 +234,10 @@ export default {
                     ]
                 }
             ],
-            "GetUser": [
+            "ListStorageItemRelations": [
+                52
+            ],
+            "GetStorageItemRelation": [
                 52,
                 {
                     "id": [
@@ -243,11 +246,20 @@ export default {
                     ]
                 }
             ],
+            "GetUser": [
+                55,
+                {
+                    "id": [
+                        5,
+                        "Int!"
+                    ]
+                }
+            ],
             "ListUsers": [
-                52
+                55
             ],
             "CurrentUser": [
-                52
+                55
             ],
             "__typename": [
                 3
@@ -420,16 +432,16 @@ export default {
                     ]
                 }
             ],
-            "CreateStorageItem": [
+            "CreateStorageCategoryFormFieldGenerator": [
                 38,
                 {
                     "input": [
                         39,
-                        "StorageItemMutationInput!"
+                        "StorageCategoryFormFieldGeneratorMutationInput!"
                     ]
                 }
             ],
-            "UpdateStorageItem": [
+            "UpdateStorageCategoryFormFieldGenerator": [
                 38,
                 {
                     "id": [
@@ -438,12 +450,43 @@ export default {
                     ],
                     "input": [
                         39,
+                        "StorageCategoryFormFieldGeneratorMutationInput!"
+                    ]
+                }
+            ],
+            "DeleteStorageCategoryFormFieldGenerator": [
+                38,
+                {
+                    "id": [
+                        5,
+                        "Int!"
+                    ]
+                }
+            ],
+            "CreateStorageItem": [
+                41,
+                {
+                    "input": [
+                        42,
+                        "StorageItemMutationInput!"
+                    ]
+                }
+            ],
+            "UpdateStorageItem": [
+                41,
+                {
+                    "id": [
+                        5,
+                        "Int!"
+                    ],
+                    "input": [
+                        42,
                         "StorageItemMutationInput!"
                     ]
                 }
             ],
             "DeleteStorageItem": [
-                38,
+                41,
                 {
                     "id": [
                         5,
@@ -452,29 +495,29 @@ export default {
                 }
             ],
             "CreateStorageItemControllerBlueprint": [
-                41,
+                44,
                 {
                     "input": [
-                        42,
+                        45,
                         "StorageItemControllerBlueprintMutationInput!"
                     ]
                 }
             ],
             "UpdateStorageItemControllerBlueprint": [
-                41,
+                44,
                 {
                     "id": [
                         5,
                         "Int!"
                     ],
                     "input": [
-                        42,
+                        45,
                         "StorageItemControllerBlueprintMutationInput!"
                     ]
                 }
             ],
             "DeleteStorageItemControllerBlueprint": [
-                41,
+                44,
                 {
                     "id": [
                         5,
@@ -483,29 +526,29 @@ export default {
                 }
             ],
             "CreateStorageItemControllerInstance": [
-                44,
+                47,
                 {
                     "input": [
-                        45,
+                        48,
                         "StorageItemControllerInstanceMutationInput!"
                     ]
                 }
             ],
             "UpdateStorageItemControllerInstance": [
-                44,
+                47,
                 {
                     "id": [
                         5,
                         "Int!"
                     ],
                     "input": [
-                        45,
+                        48,
                         "StorageItemControllerInstanceMutationInput!"
                     ]
                 }
             ],
             "DeleteStorageItemControllerInstance": [
-                44,
+                47,
                 {
                     "id": [
                         5,
@@ -514,29 +557,29 @@ export default {
                 }
             ],
             "CreateStorageItemRecord": [
-                47,
+                50,
                 {
                     "input": [
-                        48,
+                        51,
                         "StorageItemRecordMutationInput!"
                     ]
                 }
             ],
             "UpdateStorageItemRecord": [
-                47,
+                50,
                 {
                     "id": [
                         5,
                         "Int!"
                     ],
                     "input": [
-                        48,
+                        51,
                         "StorageItemRecordMutationInput!"
                     ]
                 }
             ],
             "DeleteStorageItemRecord": [
-                47,
+                50,
                 {
                     "id": [
                         5,
@@ -545,29 +588,29 @@ export default {
                 }
             ],
             "CreateStorageItemRelation": [
-                50,
+                53,
                 {
                     "input": [
-                        51,
+                        54,
                         "StorageItemRelationMutationInput!"
                     ]
                 }
             ],
             "UpdateStorageItemRelation": [
-                50,
+                53,
                 {
                     "id": [
                         5,
                         "Int!"
                     ],
                     "input": [
-                        51,
+                        54,
                         "StorageItemRelationMutationInput!"
                     ]
                 }
             ],
             "DeleteStorageItemRelation": [
-                50,
+                53,
                 {
                     "id": [
                         5,
@@ -576,29 +619,29 @@ export default {
                 }
             ],
             "CreateUser": [
-                53,
+                56,
                 {
                     "input": [
-                        54,
+                        57,
                         "UserMutationInput!"
                     ]
                 }
             ],
             "UpdateUser": [
-                53,
+                56,
                 {
                     "id": [
                         5,
                         "Int!"
                     ],
                     "input": [
-                        54,
+                        57,
                         "UserMutationInput!"
                     ]
                 }
             ],
             "DeleteUser": [
-                53,
+                56,
                 {
                     "id": [
                         5,
@@ -607,7 +650,7 @@ export default {
                 }
             ],
             "Login": [
-                53,
+                56,
                 {
                     "username": [
                         3,
@@ -687,7 +730,7 @@ export default {
                 3
             ],
             "user": [
-                52
+                55
             ],
             "createdAt": [
                 3
@@ -768,10 +811,10 @@ export default {
                 22
             ],
             "sender": [
-                52
+                55
             ],
             "recipient": [
-                52
+                55
             ],
             "createdAt": [
                 3
@@ -907,9 +950,12 @@ export default {
                 31
             ],
             "items": [
-                37
+                40
             ],
             "nestedItems": [
+                40
+            ],
+            "generators": [
                 37
             ],
             "createdAt": [
@@ -963,9 +1009,6 @@ export default {
             "required": [
                 22
             ],
-            "default": [
-                3
-            ],
             "format": [
                 3
             ],
@@ -974,6 +1017,9 @@ export default {
             ],
             "categories": [
                 31
+            ],
+            "generators": [
+                37
             ],
             "createdAt": [
                 3
@@ -1009,14 +1055,56 @@ export default {
             "required": [
                 22
             ],
-            "default": [
-                3
-            ],
             "format": [
                 3
             ],
             "properties": [
                 1
+            ],
+            "__typename": [
+                3
+            ]
+        },
+        "StorageCategoryFormFieldGenerator": {
+            "generator": [
+                3
+            ],
+            "category": [
+                31
+            ],
+            "field": [
+                34
+            ],
+            "createdAt": [
+                3
+            ],
+            "updatedAt": [
+                3
+            ],
+            "__typename": [
+                3
+            ]
+        },
+        "StorageCategoryFormFieldGeneratorMutationResponse": {
+            "on_StorageCategoryFormFieldGenerator": [
+                37
+            ],
+            "on_Error": [
+                2
+            ],
+            "__typename": [
+                3
+            ]
+        },
+        "StorageCategoryFormFieldGeneratorMutationInput": {
+            "generator": [
+                3
+            ],
+            "categoryId": [
+                5
+            ],
+            "fieldId": [
+                5
             ],
             "__typename": [
                 3
@@ -1036,19 +1124,19 @@ export default {
                 31
             ],
             "records": [
-                46
+                49
             ],
             "relations": [
-                49
+                52
             ],
             "lhsRelations": [
-                49
+                52
             ],
             "rhsRelations": [
-                49
+                52
             ],
             "controllers": [
-                43
+                46
             ],
             "createdAt": [
                 3
@@ -1062,7 +1150,7 @@ export default {
         },
         "StorageItemMutationResponse": {
             "on_StorageItem": [
-                37
+                40
             ],
             "on_Error": [
                 2
@@ -1093,7 +1181,7 @@ export default {
                 3
             ],
             "instances": [
-                43
+                46
             ],
             "createdAt": [
                 3
@@ -1107,7 +1195,7 @@ export default {
         },
         "StorageItemControllerBlueprintMutationResponse": {
             "on_StorageItemControllerBlueprint": [
-                40
+                43
             ],
             "on_Error": [
                 2
@@ -1132,7 +1220,7 @@ export default {
                 12
             ],
             "blueprint": [
-                40
+                43
             ],
             "parameters": [
                 1
@@ -1149,7 +1237,7 @@ export default {
         },
         "StorageItemControllerInstanceMutationResponse": {
             "on_StorageItemControllerInstance": [
-                43
+                46
             ],
             "on_Error": [
                 2
@@ -1174,7 +1262,7 @@ export default {
                 12
             ],
             "item": [
-                37
+                40
             ],
             "quantity": [
                 5
@@ -1194,7 +1282,7 @@ export default {
         },
         "StorageItemRecordMutationResponse": {
             "on_StorageItemRecord": [
-                46
+                49
             ],
             "on_Error": [
                 2
@@ -1228,10 +1316,10 @@ export default {
                 22
             ],
             "lhs": [
-                37
+                40
             ],
             "rhs": [
-                37
+                40
             ],
             "createdAt": [
                 3
@@ -1245,7 +1333,7 @@ export default {
         },
         "StorageItemRelationMutationResponse": {
             "on_StorageItemRelation": [
-                49
+                52
             ],
             "on_Error": [
                 2
@@ -1305,7 +1393,7 @@ export default {
         },
         "UserMutationResponse": {
             "on_User": [
-                52
+                55
             ],
             "on_Error": [
                 2

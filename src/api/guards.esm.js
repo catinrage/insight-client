@@ -167,6 +167,22 @@ export var isStorageCategoryFormFieldMutationResponse = function(obj) {
 
 
 
+var StorageCategoryFormFieldGenerator_possibleTypes = ['StorageCategoryFormFieldGenerator']
+export var isStorageCategoryFormFieldGenerator = function(obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isStorageCategoryFormFieldGenerator"')
+  return StorageCategoryFormFieldGenerator_possibleTypes.includes(obj.__typename)
+}
+
+
+
+var StorageCategoryFormFieldGeneratorMutationResponse_possibleTypes = ['StorageCategoryFormFieldGenerator','Error']
+export var isStorageCategoryFormFieldGeneratorMutationResponse = function(obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isStorageCategoryFormFieldGeneratorMutationResponse"')
+  return StorageCategoryFormFieldGeneratorMutationResponse_possibleTypes.includes(obj.__typename)
+}
+
+
+
 var StorageItem_possibleTypes = ['StorageItem']
 export var isStorageItem = function(obj) {
   if (!obj || !obj.__typename) throw new Error('__typename is missing in "isStorageItem"')

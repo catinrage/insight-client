@@ -33,6 +33,8 @@ export interface Query {
     GetStorageCategoryFormField?: StorageCategoryFormField
     ListStorageCategoryFormFields: StorageCategoryFormField[]
     SearchStorageCategoryFormFieldsByName: StorageCategoryFormField[]
+    GetStorageCategoryFormFieldGenerator?: StorageCategoryFormFieldGenerator
+    ListStorageCategoryFormFieldGenerators: StorageCategoryFormFieldGenerator[]
     ListStorageItems: StorageItem[]
     GetStorageItemsByCategory: StorageItem[]
     GetStorageItem: StorageItem
@@ -70,6 +72,9 @@ export interface Mutation {
     CreateStorageCategoryFormField: StorageCategoryFormFieldMutationResponse
     UpdateStorageCategoryFormField: StorageCategoryFormFieldMutationResponse
     DeleteStorageCategoryFormField: StorageCategoryFormFieldMutationResponse
+    CreateStorageCategoryFormFieldGenerator: StorageCategoryFormFieldGeneratorMutationResponse
+    UpdateStorageCategoryFormFieldGenerator: StorageCategoryFormFieldGeneratorMutationResponse
+    DeleteStorageCategoryFormFieldGenerator: StorageCategoryFormFieldGeneratorMutationResponse
     CreateStorageItem: StorageItemMutationResponse
     UpdateStorageItem: StorageItemMutationResponse
     DeleteStorageItem: StorageItemMutationResponse
@@ -177,6 +182,7 @@ export interface StorageCategory {
     children: StorageCategory[]
     items: StorageItem[]
     nestedItems: StorageItem[]
+    generators: StorageCategoryFormFieldGenerator[]
     createdAt: Scalars['String']
     updatedAt: Scalars['String']
     __typename: 'StorageCategory'
@@ -190,16 +196,27 @@ export interface StorageCategoryFormField {
     label: Scalars['String']
     type: GenericValueType
     required: Scalars['Boolean']
-    default: Scalars['String']
     format: Scalars['String']
     properties?: Scalars['JSONObject']
     categories: StorageCategory[]
+    generators: StorageCategoryFormFieldGenerator[]
     createdAt: Scalars['String']
     updatedAt: Scalars['String']
     __typename: 'StorageCategoryFormField'
 }
 
 export type StorageCategoryFormFieldMutationResponse = (StorageCategoryFormField | Error) & { __isUnion?: true }
+
+export interface StorageCategoryFormFieldGenerator {
+    generator: Scalars['String']
+    category?: StorageCategory
+    field?: StorageCategoryFormField
+    createdAt: Scalars['String']
+    updatedAt: Scalars['String']
+    __typename: 'StorageCategoryFormFieldGenerator'
+}
+
+export type StorageCategoryFormFieldGeneratorMutationResponse = (StorageCategoryFormFieldGenerator | Error) & { __isUnion?: true }
 
 export interface StorageItem {
     id: Scalars['ID']
@@ -306,6 +323,8 @@ export interface QueryRequest{
     GetStorageCategoryFormField?: [{id: Scalars['Int']},StorageCategoryFormFieldRequest]
     ListStorageCategoryFormFields?: [{skip: Scalars['Int'],take: Scalars['Int'],orderBy: Scalars['String'],orderType: Scalars['String']},StorageCategoryFormFieldRequest]
     SearchStorageCategoryFormFieldsByName?: [{keyword: Scalars['String']},StorageCategoryFormFieldRequest]
+    GetStorageCategoryFormFieldGenerator?: [{id: Scalars['Int']},StorageCategoryFormFieldGeneratorRequest]
+    ListStorageCategoryFormFieldGenerators?: StorageCategoryFormFieldGeneratorRequest
     ListStorageItems?: StorageItemRequest
     GetStorageItemsByCategory?: [{category: Scalars['Int']},StorageItemRequest]
     GetStorageItem?: [{id: Scalars['Int']},StorageItemRequest]
@@ -344,6 +363,9 @@ export interface MutationRequest{
     CreateStorageCategoryFormField?: [{input: StorageCategoryFormFieldMutationInput},StorageCategoryFormFieldMutationResponseRequest]
     UpdateStorageCategoryFormField?: [{id: Scalars['Int'],input: StorageCategoryFormFieldMutationInput},StorageCategoryFormFieldMutationResponseRequest]
     DeleteStorageCategoryFormField?: [{id: Scalars['Int']},StorageCategoryFormFieldMutationResponseRequest]
+    CreateStorageCategoryFormFieldGenerator?: [{input: StorageCategoryFormFieldGeneratorMutationInput},StorageCategoryFormFieldGeneratorMutationResponseRequest]
+    UpdateStorageCategoryFormFieldGenerator?: [{id: Scalars['Int'],input: StorageCategoryFormFieldGeneratorMutationInput},StorageCategoryFormFieldGeneratorMutationResponseRequest]
+    DeleteStorageCategoryFormFieldGenerator?: [{id: Scalars['Int']},StorageCategoryFormFieldGeneratorMutationResponseRequest]
     CreateStorageItem?: [{input: StorageItemMutationInput},StorageItemMutationResponseRequest]
     UpdateStorageItem?: [{id: Scalars['Int'],input: StorageItemMutationInput},StorageItemMutationResponseRequest]
     DeleteStorageItem?: [{id: Scalars['Int']},StorageItemMutationResponseRequest]
@@ -490,6 +512,7 @@ export interface StorageCategoryRequest{
     children?: StorageCategoryRequest
     items?: StorageItemRequest
     nestedItems?: StorageItemRequest
+    generators?: StorageCategoryFormFieldGeneratorRequest
     createdAt?: boolean | number
     updatedAt?: boolean | number
     __typename?: boolean | number
@@ -510,10 +533,10 @@ export interface StorageCategoryFormFieldRequest{
     label?: boolean | number
     type?: boolean | number
     required?: boolean | number
-    default?: boolean | number
     format?: boolean | number
     properties?: boolean | number
     categories?: StorageCategoryRequest
+    generators?: StorageCategoryFormFieldGeneratorRequest
     createdAt?: boolean | number
     updatedAt?: boolean | number
     __typename?: boolean | number
@@ -526,7 +549,25 @@ export interface StorageCategoryFormFieldMutationResponseRequest{
     __typename?: boolean | number
 }
 
-export interface StorageCategoryFormFieldMutationInput {name: Scalars['String'],label: Scalars['String'],type: GenericValueType,required: Scalars['Boolean'],default: Scalars['String'],format: Scalars['String'],properties?: (Scalars['JSONObject'] | null)}
+export interface StorageCategoryFormFieldMutationInput {name: Scalars['String'],label: Scalars['String'],type: GenericValueType,required: Scalars['Boolean'],format: Scalars['String'],properties?: (Scalars['JSONObject'] | null)}
+
+export interface StorageCategoryFormFieldGeneratorRequest{
+    generator?: boolean | number
+    category?: StorageCategoryRequest
+    field?: StorageCategoryFormFieldRequest
+    createdAt?: boolean | number
+    updatedAt?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+export interface StorageCategoryFormFieldGeneratorMutationResponseRequest{
+    on_StorageCategoryFormFieldGenerator?:StorageCategoryFormFieldGeneratorRequest,
+    on_Error?:ErrorRequest,
+    __typename?: boolean | number
+}
+
+export interface StorageCategoryFormFieldGeneratorMutationInput {generator: Scalars['String'],categoryId: Scalars['Int'],fieldId: Scalars['Int']}
 
 export interface StorageItemRequest{
     id?: boolean | number
@@ -819,6 +860,22 @@ export const isStorageCategoryFormFieldMutationResponse = (obj?: { __typename?: 
 
 
 
+const StorageCategoryFormFieldGenerator_possibleTypes: string[] = ['StorageCategoryFormFieldGenerator']
+export const isStorageCategoryFormFieldGenerator = (obj?: { __typename?: any } | null): obj is StorageCategoryFormFieldGenerator => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isStorageCategoryFormFieldGenerator"')
+  return StorageCategoryFormFieldGenerator_possibleTypes.includes(obj.__typename)
+}
+
+
+
+const StorageCategoryFormFieldGeneratorMutationResponse_possibleTypes: string[] = ['StorageCategoryFormFieldGenerator','Error']
+export const isStorageCategoryFormFieldGeneratorMutationResponse = (obj?: { __typename?: any } | null): obj is StorageCategoryFormFieldGeneratorMutationResponse => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isStorageCategoryFormFieldGeneratorMutationResponse"')
+  return StorageCategoryFormFieldGeneratorMutationResponse_possibleTypes.includes(obj.__typename)
+}
+
+
+
 const StorageItem_possibleTypes: string[] = ['StorageItem']
 export const isStorageItem = (obj?: { __typename?: any } | null): obj is StorageItem => {
   if (!obj?.__typename) throw new Error('__typename is missing in "isStorageItem"')
@@ -941,6 +998,8 @@ export interface QueryPromiseChain{
     GetStorageCategoryFormField: ((args: {id: Scalars['Int']}) => StorageCategoryFormFieldPromiseChain & {get: <R extends StorageCategoryFormFieldRequest>(request: R, defaultValue?: (FieldsSelection<StorageCategoryFormField, R> | undefined)) => Promise<(FieldsSelection<StorageCategoryFormField, R> | undefined)>}),
     ListStorageCategoryFormFields: ((args: {skip: Scalars['Int'],take: Scalars['Int'],orderBy: Scalars['String'],orderType: Scalars['String']}) => {get: <R extends StorageCategoryFormFieldRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormField, R>[]) => Promise<FieldsSelection<StorageCategoryFormField, R>[]>}),
     SearchStorageCategoryFormFieldsByName: ((args: {keyword: Scalars['String']}) => {get: <R extends StorageCategoryFormFieldRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormField, R>[]) => Promise<FieldsSelection<StorageCategoryFormField, R>[]>}),
+    GetStorageCategoryFormFieldGenerator: ((args: {id: Scalars['Int']}) => StorageCategoryFormFieldGeneratorPromiseChain & {get: <R extends StorageCategoryFormFieldGeneratorRequest>(request: R, defaultValue?: (FieldsSelection<StorageCategoryFormFieldGenerator, R> | undefined)) => Promise<(FieldsSelection<StorageCategoryFormFieldGenerator, R> | undefined)>}),
+    ListStorageCategoryFormFieldGenerators: ({get: <R extends StorageCategoryFormFieldGeneratorRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldGenerator, R>[]) => Promise<FieldsSelection<StorageCategoryFormFieldGenerator, R>[]>}),
     ListStorageItems: ({get: <R extends StorageItemRequest>(request: R, defaultValue?: FieldsSelection<StorageItem, R>[]) => Promise<FieldsSelection<StorageItem, R>[]>}),
     GetStorageItemsByCategory: ((args: {category: Scalars['Int']}) => {get: <R extends StorageItemRequest>(request: R, defaultValue?: FieldsSelection<StorageItem, R>[]) => Promise<FieldsSelection<StorageItem, R>[]>}),
     GetStorageItem: ((args: {id: Scalars['Int']}) => StorageItemPromiseChain & {get: <R extends StorageItemRequest>(request: R, defaultValue?: FieldsSelection<StorageItem, R>) => Promise<FieldsSelection<StorageItem, R>>}),
@@ -977,6 +1036,8 @@ export interface QueryObservableChain{
     GetStorageCategoryFormField: ((args: {id: Scalars['Int']}) => StorageCategoryFormFieldObservableChain & {get: <R extends StorageCategoryFormFieldRequest>(request: R, defaultValue?: (FieldsSelection<StorageCategoryFormField, R> | undefined)) => Observable<(FieldsSelection<StorageCategoryFormField, R> | undefined)>}),
     ListStorageCategoryFormFields: ((args: {skip: Scalars['Int'],take: Scalars['Int'],orderBy: Scalars['String'],orderType: Scalars['String']}) => {get: <R extends StorageCategoryFormFieldRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormField, R>[]) => Observable<FieldsSelection<StorageCategoryFormField, R>[]>}),
     SearchStorageCategoryFormFieldsByName: ((args: {keyword: Scalars['String']}) => {get: <R extends StorageCategoryFormFieldRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormField, R>[]) => Observable<FieldsSelection<StorageCategoryFormField, R>[]>}),
+    GetStorageCategoryFormFieldGenerator: ((args: {id: Scalars['Int']}) => StorageCategoryFormFieldGeneratorObservableChain & {get: <R extends StorageCategoryFormFieldGeneratorRequest>(request: R, defaultValue?: (FieldsSelection<StorageCategoryFormFieldGenerator, R> | undefined)) => Observable<(FieldsSelection<StorageCategoryFormFieldGenerator, R> | undefined)>}),
+    ListStorageCategoryFormFieldGenerators: ({get: <R extends StorageCategoryFormFieldGeneratorRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldGenerator, R>[]) => Observable<FieldsSelection<StorageCategoryFormFieldGenerator, R>[]>}),
     ListStorageItems: ({get: <R extends StorageItemRequest>(request: R, defaultValue?: FieldsSelection<StorageItem, R>[]) => Observable<FieldsSelection<StorageItem, R>[]>}),
     GetStorageItemsByCategory: ((args: {category: Scalars['Int']}) => {get: <R extends StorageItemRequest>(request: R, defaultValue?: FieldsSelection<StorageItem, R>[]) => Observable<FieldsSelection<StorageItem, R>[]>}),
     GetStorageItem: ((args: {id: Scalars['Int']}) => StorageItemObservableChain & {get: <R extends StorageItemRequest>(request: R, defaultValue?: FieldsSelection<StorageItem, R>) => Observable<FieldsSelection<StorageItem, R>>}),
@@ -1013,6 +1074,9 @@ export interface MutationPromiseChain{
     CreateStorageCategoryFormField: ((args: {input: StorageCategoryFormFieldMutationInput}) => {get: <R extends StorageCategoryFormFieldMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldMutationResponse, R>) => Promise<FieldsSelection<StorageCategoryFormFieldMutationResponse, R>>}),
     UpdateStorageCategoryFormField: ((args: {id: Scalars['Int'],input: StorageCategoryFormFieldMutationInput}) => {get: <R extends StorageCategoryFormFieldMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldMutationResponse, R>) => Promise<FieldsSelection<StorageCategoryFormFieldMutationResponse, R>>}),
     DeleteStorageCategoryFormField: ((args: {id: Scalars['Int']}) => {get: <R extends StorageCategoryFormFieldMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldMutationResponse, R>) => Promise<FieldsSelection<StorageCategoryFormFieldMutationResponse, R>>}),
+    CreateStorageCategoryFormFieldGenerator: ((args: {input: StorageCategoryFormFieldGeneratorMutationInput}) => {get: <R extends StorageCategoryFormFieldGeneratorMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldGeneratorMutationResponse, R>) => Promise<FieldsSelection<StorageCategoryFormFieldGeneratorMutationResponse, R>>}),
+    UpdateStorageCategoryFormFieldGenerator: ((args: {id: Scalars['Int'],input: StorageCategoryFormFieldGeneratorMutationInput}) => {get: <R extends StorageCategoryFormFieldGeneratorMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldGeneratorMutationResponse, R>) => Promise<FieldsSelection<StorageCategoryFormFieldGeneratorMutationResponse, R>>}),
+    DeleteStorageCategoryFormFieldGenerator: ((args: {id: Scalars['Int']}) => {get: <R extends StorageCategoryFormFieldGeneratorMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldGeneratorMutationResponse, R>) => Promise<FieldsSelection<StorageCategoryFormFieldGeneratorMutationResponse, R>>}),
     CreateStorageItem: ((args: {input: StorageItemMutationInput}) => {get: <R extends StorageItemMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageItemMutationResponse, R>) => Promise<FieldsSelection<StorageItemMutationResponse, R>>}),
     UpdateStorageItem: ((args: {id: Scalars['Int'],input: StorageItemMutationInput}) => {get: <R extends StorageItemMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageItemMutationResponse, R>) => Promise<FieldsSelection<StorageItemMutationResponse, R>>}),
     DeleteStorageItem: ((args: {id: Scalars['Int']}) => {get: <R extends StorageItemMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageItemMutationResponse, R>) => Promise<FieldsSelection<StorageItemMutationResponse, R>>}),
@@ -1053,6 +1117,9 @@ export interface MutationObservableChain{
     CreateStorageCategoryFormField: ((args: {input: StorageCategoryFormFieldMutationInput}) => {get: <R extends StorageCategoryFormFieldMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldMutationResponse, R>) => Observable<FieldsSelection<StorageCategoryFormFieldMutationResponse, R>>}),
     UpdateStorageCategoryFormField: ((args: {id: Scalars['Int'],input: StorageCategoryFormFieldMutationInput}) => {get: <R extends StorageCategoryFormFieldMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldMutationResponse, R>) => Observable<FieldsSelection<StorageCategoryFormFieldMutationResponse, R>>}),
     DeleteStorageCategoryFormField: ((args: {id: Scalars['Int']}) => {get: <R extends StorageCategoryFormFieldMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldMutationResponse, R>) => Observable<FieldsSelection<StorageCategoryFormFieldMutationResponse, R>>}),
+    CreateStorageCategoryFormFieldGenerator: ((args: {input: StorageCategoryFormFieldGeneratorMutationInput}) => {get: <R extends StorageCategoryFormFieldGeneratorMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldGeneratorMutationResponse, R>) => Observable<FieldsSelection<StorageCategoryFormFieldGeneratorMutationResponse, R>>}),
+    UpdateStorageCategoryFormFieldGenerator: ((args: {id: Scalars['Int'],input: StorageCategoryFormFieldGeneratorMutationInput}) => {get: <R extends StorageCategoryFormFieldGeneratorMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldGeneratorMutationResponse, R>) => Observable<FieldsSelection<StorageCategoryFormFieldGeneratorMutationResponse, R>>}),
+    DeleteStorageCategoryFormFieldGenerator: ((args: {id: Scalars['Int']}) => {get: <R extends StorageCategoryFormFieldGeneratorMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldGeneratorMutationResponse, R>) => Observable<FieldsSelection<StorageCategoryFormFieldGeneratorMutationResponse, R>>}),
     CreateStorageItem: ((args: {input: StorageItemMutationInput}) => {get: <R extends StorageItemMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageItemMutationResponse, R>) => Observable<FieldsSelection<StorageItemMutationResponse, R>>}),
     UpdateStorageItem: ((args: {id: Scalars['Int'],input: StorageItemMutationInput}) => {get: <R extends StorageItemMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageItemMutationResponse, R>) => Observable<FieldsSelection<StorageItemMutationResponse, R>>}),
     DeleteStorageItem: ((args: {id: Scalars['Int']}) => {get: <R extends StorageItemMutationResponseRequest>(request: R, defaultValue?: FieldsSelection<StorageItemMutationResponse, R>) => Observable<FieldsSelection<StorageItemMutationResponse, R>>}),
@@ -1175,6 +1242,7 @@ export interface StorageCategoryPromiseChain{
     children: ({get: <R extends StorageCategoryRequest>(request: R, defaultValue?: FieldsSelection<StorageCategory, R>[]) => Promise<FieldsSelection<StorageCategory, R>[]>}),
     items: ({get: <R extends StorageItemRequest>(request: R, defaultValue?: FieldsSelection<StorageItem, R>[]) => Promise<FieldsSelection<StorageItem, R>[]>}),
     nestedItems: ({get: <R extends StorageItemRequest>(request: R, defaultValue?: FieldsSelection<StorageItem, R>[]) => Promise<FieldsSelection<StorageItem, R>[]>}),
+    generators: ({get: <R extends StorageCategoryFormFieldGeneratorRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldGenerator, R>[]) => Promise<FieldsSelection<StorageCategoryFormFieldGenerator, R>[]>}),
     createdAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
     updatedAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>})
 }
@@ -1188,6 +1256,7 @@ export interface StorageCategoryObservableChain{
     children: ({get: <R extends StorageCategoryRequest>(request: R, defaultValue?: FieldsSelection<StorageCategory, R>[]) => Observable<FieldsSelection<StorageCategory, R>[]>}),
     items: ({get: <R extends StorageItemRequest>(request: R, defaultValue?: FieldsSelection<StorageItem, R>[]) => Observable<FieldsSelection<StorageItem, R>[]>}),
     nestedItems: ({get: <R extends StorageItemRequest>(request: R, defaultValue?: FieldsSelection<StorageItem, R>[]) => Observable<FieldsSelection<StorageItem, R>[]>}),
+    generators: ({get: <R extends StorageCategoryFormFieldGeneratorRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldGenerator, R>[]) => Observable<FieldsSelection<StorageCategoryFormFieldGenerator, R>[]>}),
     createdAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
     updatedAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>})
 }
@@ -1198,10 +1267,10 @@ export interface StorageCategoryFormFieldPromiseChain{
     label: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
     type: ({get: (request?: boolean|number, defaultValue?: GenericValueType) => Promise<GenericValueType>}),
     required: ({get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Promise<Scalars['Boolean']>}),
-    default: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
     format: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
     properties: ({get: (request?: boolean|number, defaultValue?: (Scalars['JSONObject'] | undefined)) => Promise<(Scalars['JSONObject'] | undefined)>}),
     categories: ({get: <R extends StorageCategoryRequest>(request: R, defaultValue?: FieldsSelection<StorageCategory, R>[]) => Promise<FieldsSelection<StorageCategory, R>[]>}),
+    generators: ({get: <R extends StorageCategoryFormFieldGeneratorRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldGenerator, R>[]) => Promise<FieldsSelection<StorageCategoryFormFieldGenerator, R>[]>}),
     createdAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
     updatedAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>})
 }
@@ -1212,10 +1281,26 @@ export interface StorageCategoryFormFieldObservableChain{
     label: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
     type: ({get: (request?: boolean|number, defaultValue?: GenericValueType) => Observable<GenericValueType>}),
     required: ({get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Observable<Scalars['Boolean']>}),
-    default: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
     format: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
     properties: ({get: (request?: boolean|number, defaultValue?: (Scalars['JSONObject'] | undefined)) => Observable<(Scalars['JSONObject'] | undefined)>}),
     categories: ({get: <R extends StorageCategoryRequest>(request: R, defaultValue?: FieldsSelection<StorageCategory, R>[]) => Observable<FieldsSelection<StorageCategory, R>[]>}),
+    generators: ({get: <R extends StorageCategoryFormFieldGeneratorRequest>(request: R, defaultValue?: FieldsSelection<StorageCategoryFormFieldGenerator, R>[]) => Observable<FieldsSelection<StorageCategoryFormFieldGenerator, R>[]>}),
+    createdAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
+    updatedAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>})
+}
+
+export interface StorageCategoryFormFieldGeneratorPromiseChain{
+    generator: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
+    category: (StorageCategoryPromiseChain & {get: <R extends StorageCategoryRequest>(request: R, defaultValue?: (FieldsSelection<StorageCategory, R> | undefined)) => Promise<(FieldsSelection<StorageCategory, R> | undefined)>}),
+    field: (StorageCategoryFormFieldPromiseChain & {get: <R extends StorageCategoryFormFieldRequest>(request: R, defaultValue?: (FieldsSelection<StorageCategoryFormField, R> | undefined)) => Promise<(FieldsSelection<StorageCategoryFormField, R> | undefined)>}),
+    createdAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
+    updatedAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>})
+}
+
+export interface StorageCategoryFormFieldGeneratorObservableChain{
+    generator: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
+    category: (StorageCategoryObservableChain & {get: <R extends StorageCategoryRequest>(request: R, defaultValue?: (FieldsSelection<StorageCategory, R> | undefined)) => Observable<(FieldsSelection<StorageCategory, R> | undefined)>}),
+    field: (StorageCategoryFormFieldObservableChain & {get: <R extends StorageCategoryFormFieldRequest>(request: R, defaultValue?: (FieldsSelection<StorageCategoryFormField, R> | undefined)) => Observable<(FieldsSelection<StorageCategoryFormField, R> | undefined)>}),
     createdAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
     updatedAt: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>})
 }

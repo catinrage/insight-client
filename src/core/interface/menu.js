@@ -1,3 +1,5 @@
+import { get } from 'svelte/store';
+
 class Item {
   constructor(menu, title, icon, path = '') {
     this.menu = menu;
@@ -18,6 +20,7 @@ class Item {
     if (this.subItems.length) {
       this.open = !this.open;
     } else {
+      if (get(this.menu.window.loading)) return;
       for (const item of this.menu.items) {
         item.active = false;
         for (const subItem of item.subItems) {

@@ -40,7 +40,7 @@
     category = await client.chain.query.GetStorageCategory({id: pointer}).get({ name: true, fields: {...everything}, inheritedFields: {...everything}, nestedItems: {...everything, category: { name: true, parent: { name: true } }} });
     items = category.nestedItems;
     resolvedItems = items;
-    filters = [{ type: 'ID' }, ...category.fields, ...category.inheritedFields];
+    filters = [{ type: 'ID' }, ...category.inheritedFields, ...category.fields];
     $loaded = true;
   };
 
@@ -175,10 +175,10 @@
   let fields = [];
   let fieldsBuffer = {};
   let lastBufferState = fieldsBuffer;
-  let noreact = false;
+  let ignore = false;
 
   $: {
-    if (!noreact) {
+    if (!ignore) {
       let changedFields = [];
       for (const field of fields) {
         if (lastBufferState[field.name] !== fieldsBuffer[field.name]) {
@@ -224,18 +224,36 @@
       } else {
         createPointer = categoryId
       }
-      createCategoryObject = await client.chain.query.GetStorageCategory({ id: createPointer }).get({ id: true, name: true, fields: {...everything}, inheritedFields: {...everything} });
+      createCategoryObject = await client.chain.query.GetStorageCategory({ id: createPointer }).get({ id: true, name: true, generators: {...everything, field: {id: true}}, fields: {...everything}, inheritedFields: {...everything} });
       fields = [...createCategoryObject.inheritedFields, ...createCategoryObject.fields];
+      fields.map(field => {
+        field.default = '';
+        createCategoryObject.generators.forEach(generator => {
+          if (field.id === generator.field.id) {
+            field.default = generator.generator;
+          }
+        });
+        return field;
+      });
       mode = 'CREATE';
     },
     edit: async (id) => {
-      editItemObject = await client.chain.query.GetStorageItem({ id: Number(id) }).get({...everything, category: { id: true, name: true, fields: {...everything}, inheritedFields: {...everything} }});
+      editItemObject = await client.chain.query.GetStorageItem({ id: Number(id) }).get({...everything, category: { id: true, name: true, generators: {...everything, field: {id: true}}, fields: {...everything}, inheritedFields: {...everything} }});
       fields = [...editItemObject.category.inheritedFields, ...editItemObject.category.fields];
-      noreact = true;
+      fields.map(field => {
+        field.default = '';
+        editItemObject.category.generators.forEach(generator => {
+          if (field.id === generator.field.id) {
+            field.default = generator.generator;
+          }
+        });
+        return field;
+      });
+      ignore = true;
       for (let fieldId in editItemObject.properties) {
         fieldsBuffer[((await getFieldData(fieldId)).name)] = editItemObject.properties[fieldId];
       }
-      noreact = false;
+      ignore = false;
       fieldsBuffer = fieldsBuffer;
       mode = 'EDIT';
     },
@@ -315,7 +333,7 @@
             <div
               class="absolute top-o left-0 duration-100 w-min rounded-md cursor-help group-hover:z-[1] group-hover:bg-white group-hover:p-2 group-hover:border"
             >
-              {#each Object.keys(item.properties).reverse() as property}
+              {#each Object.keys(item.properties) as property}
                 <div
                   class="whitespace-nowrap inline-block overflow-hidden bg-gray-100 px-2 py-1 min-w-[10rem] h-[24px] mb-1 rounded-md last-of-type:mb-0"
                   title={item.properties[property]}

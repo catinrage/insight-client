@@ -16,7 +16,7 @@
 
   export let window, loaded, data;
 
-  function arraymove(arr, fromIndex, toIndex) {
+  function arrayMove(arr, fromIndex, toIndex) {
     var element = arr[fromIndex];
     arr.splice(fromIndex, 1);
     arr.splice(Math.max(Math.min(arr.length, toIndex), 0), 0, element);
@@ -43,17 +43,37 @@
     create: async () => {
       mode = 'CREATE';
       const parentId = location.at(-1).id;
-      const category = await client.chain.query.GetStorageCategory({id: parentId}).get({ fields: { id: true, name: true, label: true, type:true }, inheritedFields: { id: true, name: true, label: true, type: true } });
+      const category = await client.chain.query.GetStorageCategory({id: parentId}).get({ fields: { id: true, name: true, label: true, type: true, generators: {...everything} }, inheritedFields: { id: true, name: true, label: true, type: true, generators: {...everything} } });
       formInheritedFields = [...category.inheritedFields, ...category.fields];
+      formInheritedFields.map(field => {
+        field.generator = ""; 
+        return field;
+      });
+      formFields.map(field => {
+        field.generator = ""; 
+        return field;
+      });
     },
     edit: async (id) => {
       mode = 'EDIT';
       targetId = Number(id);
-      const category = await client.chain.query.GetStorageCategory({id: targetId}).get({...everything, fields: { id: true, name: true, label: true, type:true }, inheritedFields: { id: true, name: true, label: true, type: true } });
+      const category = await client.chain.query.GetStorageCategory({id: targetId}).get({...everything, generators: { generator: true, field: { id: true } }, fields: { id: true, name: true, label: true, type: true }, inheritedFields: { id: true, name: true, label: true, type: true } });
       form.name = category.name;
       form.fields = category.fields.map(field => Number(field.id));
       formFields = category.fields;
       formInheritedFields = category.inheritedFields;
+      formInheritedFields.map(field => {
+        field.generator = category.generators.find(generator => {
+          return generator.field.id == field.id
+        })?.generator || "";
+        return field;
+      });
+      formFields.map(field => {
+        field.generator = category.generators.find(generator => {
+          return generator.field.id == field.id
+        })?.generator || "";
+        return field;
+      });
     },
   };
 
@@ -67,6 +87,12 @@
         const category = await client.chain.mutation.CreateStorageCategory({input: {name: form.name, fields: form.fields, parentId}}).get({on_Error: {...everything}, on_StorageCategory: {...everything}})
         if (category.__typename === 'StorageCategory') {
           await loadCategoriesFromDatabase();
+          for (let field of formInheritedFields) {
+            await client.chain.mutation.CreateStorageCategoryFormFieldGenerator({input: { generator: field.generator, fieldId: Number(field.id), categoryId: Number(category.id)}}).get({on_Error: {...everything}, on_StorageCategoryFormFieldGenerator: {...everything}});
+          }
+          for (let field of formFields) {
+            await client.chain.mutation.CreateStorageCategoryFormFieldGenerator({input: { generator: field.generator, fieldId: Number(field.id), categoryId: Number(category.id)}}).get({on_Error: {...everything}, on_StorageCategoryFormFieldGenerator: {...everything}});
+          }
           notifications.success('Category created successfully !');
           action.cancel();
         } else {
@@ -99,6 +125,12 @@
         const category = await client.chain.mutation.UpdateStorageCategory({id: targetId, input: {name: form.name, fields: form.fields, parentId}}).get({on_Error: {...everything}, on_StorageCategory: {...everything}});
         if (category.__typename === 'StorageCategory') {
           await loadCategoriesFromDatabase();
+          for (let field of formInheritedFields) {
+            await client.chain.mutation.CreateStorageCategoryFormFieldGenerator({input: { generator: field.generator, fieldId: Number(field.id), categoryId: Number(category.id)}}).get({on_Error: {...everything}, on_StorageCategoryFormFieldGenerator: {...everything}});
+          }
+          for (let field of formFields) {
+            await client.chain.mutation.CreateStorageCategoryFormFieldGenerator({input: { generator: field.generator, fieldId: Number(field.id), categoryId: Number(category.id)}}).get({on_Error: {...everything}, on_StorageCategoryFormFieldGenerator: {...everything}});
+          }
           notifications.success('Category updated successfully !');
           action.cancel();
         } else {
@@ -172,7 +204,7 @@
     $loaded = true;
   }
 
-  // dont remove location ($ reactivity)
+  // don't remove location ($ reactivity)
   $: loadCategoriesFromDatabase(location)
 
   let categoriesResolved = [];
@@ -181,7 +213,7 @@
 
   $: {
     fieldsSearchInput;
-    fieldsSearchResultsPromise = client.chain.query.SearchStorageCategoryFormFieldsByName({keyword: fieldsSearchInput}).get({id: true, type: true, name: true});
+    fieldsSearchResultsPromise = client.chain.query.SearchStorageCategoryFormFieldsByName({keyword: fieldsSearchInput}).get({id: true, type: true, name: true, label: true});
   }
 
   let fieldsSearchInput = '';
@@ -239,10 +271,10 @@
   <div
     class="flex content-start h-[calc(100%-104px)] text-xs overflow-auto flex-row flex-wrap gap-2 p-2"
   >
-    {#each categoriesResolved as category}
+    {#each categoriesResolved as category (category.id)}
       <div
         class="relative w-full h-fit p-2 bg-gray-50 rounded-md cursor-pointer hover:bg-gray-100"
-        on:click={() => {
+        on:click|once={() => {
           location = [
             ...location,
             { id: Number(category.id), name: category.name },
@@ -371,60 +403,104 @@
         />
       </div>
       <div class="text-[11px] -mb-2 font-medium">Fields :</div>
-      <div class="text-xs f-full bg-white p-2 rounded-md">
+      <div
+        class="text-xs f-full bg-white p-2 rounded-md h-[310px] overflow-y-auto"
+      >
         <div class="relative">
           <div class="mb-1 flex flex-col gap-1">
             {#each formInheritedFields as field}
-              <div class="relative flex gap-2 py-1 px-2 rounded-md bg-gray-100">
-                <ion-icon
-                  class="relative top-0.5"
-                  name={typeIconMap[field.type]}
-                />
-                <div>{field.name}</div>
-                <div
-                  class="absolute flex right-2 top-1/2 -translate-y-1/2 rounded-full"
-                >
-                  <ion-icon name="bookmark-outline" />
+              <div class="flex flex-col bg-gray-100">
+                <div class="flex relative gap-2 py-1 px-2 rounded-md">
+                  <ion-icon
+                    class="relative top-0.5"
+                    name={typeIconMap[field.type]}
+                  />
+                  <div class="relative group grow">
+                    <span class="absolute left-0 group-hover:hidden"
+                      >{field.label}</span
+                    >
+                    <span class="absolute left-0 hidden group-hover:block"
+                      >{field.name}</span
+                    >
+                  </div>
+                  <div
+                    class="absolute flex right-2 top-1/2 -translate-y-1/2 rounded-full"
+                  >
+                    <ion-icon name="bookmark-outline" />
+                  </div>
+                </div>
+                <div class="flex gap-2 py-1 px-2 rounded-md">
+                  <ion-icon
+                    class="relative top-0.5"
+                    name="color-wand-outline"
+                  />
+                  <input
+                    class="border bg-white px-1 grow rounded-md outline-none"
+                    placeholder="Generator"
+                    type="text"
+                    bind:value={field.generator}
+                  />
                 </div>
               </div>
             {/each}
             {#each formFields as field, i}
-              <div class="relative flex gap-2 py-1 px-2 rounded-md bg-gray-50">
-                <ion-icon
-                  class="relative top-0.5"
-                  name={typeIconMap[field.type]}
-                />
-                <div>{field.name}</div>
-                <div
-                  class="absolute flex right-2 top-1/2 -translate-y-1/2 rounded-full cursor-pointer hover:bg-red-200"
-                  title="Delete"
-                  on:click={() => {
-                    deleteField(field);
-                  }}
-                >
-                  <ion-icon name="close-outline" />
+              <div class="flex flex-col bg-gray-50">
+                <div class="flex relative gap-2 py-1 px-2 rounded-md">
+                  <ion-icon
+                    class="relative top-0.5"
+                    name={typeIconMap[field.type]}
+                  />
+                  <div class="relative group grow">
+                    <span class="absolute left-0 group-hover:hidden"
+                      >{field.label}</span
+                    >
+                    <span class="absolute left-0 hidden group-hover:block"
+                      >{field.name}</span
+                    >
+                  </div>
+                  <div
+                    class="absolute flex right-2 top-1/2 -translate-y-1/2 rounded-full cursor-pointer hover:bg-red-200"
+                    title="Delete"
+                    on:click={() => {
+                      deleteField(field);
+                    }}
+                  >
+                    <ion-icon name="close-outline" />
+                  </div>
+                  <div
+                    class="absolute flex right-6 top-1/2 -translate-y-1/2 rounded-full cursor-pointer hover:bg-gray-200"
+                    title="Move Down"
+                    on:click={() => {
+                      arrayMove(formFields, i, i + 1);
+                      arrayMove(form.fields, i, i + 1);
+                      formFields = formFields;
+                    }}
+                  >
+                    <ion-icon name="chevron-down-outline" />
+                  </div>
+                  <div
+                    class="absolute flex right-10 top-1/2 -translate-y-1/2 rounded-full cursor-pointer hover:bg-gray-200"
+                    title="Move Up"
+                    on:click={() => {
+                      arrayMove(formFields, i, i - 1);
+                      arrayMove(form.fields, i, i - 1);
+                      formFields = formFields;
+                    }}
+                  >
+                    <ion-icon name="chevron-up-outline" />
+                  </div>
                 </div>
-                <div
-                  class="absolute flex right-6 top-1/2 -translate-y-1/2 rounded-full cursor-pointer hover:bg-gray-200"
-                  title="Move Down"
-                  on:click={() => {
-                    arraymove(formFields, i, i + 1);
-                    arraymove(form.fields, i, i + 1);
-                    formFields = formFields;
-                  }}
-                >
-                  <ion-icon name="chevron-down-outline" />
-                </div>
-                <div
-                  class="absolute flex right-10 top-1/2 -translate-y-1/2 rounded-full cursor-pointer hover:bg-gray-200"
-                  title="Move Up"
-                  on:click={() => {
-                    arraymove(formFields, i, i - 1);
-                    arraymove(form.fields, i, i - 1);
-                    formFields = formFields;
-                  }}
-                >
-                  <ion-icon name="chevron-up-outline" />
+                <div class="flex gap-2 py-1 px-2 rounded-md">
+                  <ion-icon
+                    class="relative top-0.5"
+                    name="color-wand-outline"
+                  />
+                  <input
+                    class="border bg-white px-1 grow rounded-md outline-none"
+                    placeholder="Generator"
+                    type="text"
+                    bind:value={field.generator}
+                  />
                 </div>
               </div>
             {/each}
