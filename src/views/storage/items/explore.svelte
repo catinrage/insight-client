@@ -335,7 +335,7 @@
             >
               {#each Object.keys(item.properties) as property}
                 <div
-                  class="whitespace-nowrap w-fit inline-block overflow-hidden bg-gray-100 px-2 py-1 min-w-[10rem] h-[24px] mb-1 rounded-md last-of-type:mb-0"
+                  class="whitespace-nowrap w-fit inline-block overflow-hidden bg-gray-100 px-2 py-1 h-[24px] mb-1 rounded-md last-of-type:mb-0"
                   title={item.properties[property]}
                 >
                   <span>
