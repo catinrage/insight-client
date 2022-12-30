@@ -89,7 +89,7 @@
   let editItemObject;
 
   const action = {
-    create: async () => {absolute top-o left-0 duration-100 w-min rounded-md cursor-help group-hover:z-[1] group-hover:bg-white group-hover:p-2 group-hover:border
+    create: async () => {
       for (const field of fields) {
         if (field.required && [undefined, ''].includes(fieldsBuffer[field.name])) {
           notifications.error(`Field '${field.label}' is required !`);
