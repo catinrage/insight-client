@@ -47,10 +47,12 @@
       formInheritedFields = [...category.inheritedFields, ...category.fields];
       formInheritedFields.map(field => {
         field.generator = ""; 
+        field.ignore = true;
         return field;
       });
       formFields.map(field => {
         field.generator = ""; 
+        field.ignore = true;
         return field;
       });
     },
@@ -66,12 +68,14 @@
         field.generator = category.generators.find(generator => {
           return generator.field.id == field.id
         })?.generator || "";
+        field.ignore = true;
         return field;
       });
       formFields.map(field => {
         field.generator = category.generators.find(generator => {
           return generator.field.id == field.id
         })?.generator || "";
+        field.ignore = true;
         return field;
       });
     },
@@ -88,9 +92,11 @@
         if (category.__typename === 'StorageCategory') {
           await loadCategoriesFromDatabase();
           for (let field of formInheritedFields) {
+            if (field.ignore) continue;
             await client.chain.mutation.CreateStorageCategoryFormFieldGenerator({input: { generator: field.generator, fieldId: Number(field.id), categoryId: Number(category.id)}}).get({on_Error: {...everything}, on_StorageCategoryFormFieldGenerator: {...everything}});
           }
           for (let field of formFields) {
+            if (field.ignore) continue;
             await client.chain.mutation.CreateStorageCategoryFormFieldGenerator({input: { generator: field.generator, fieldId: Number(field.id), categoryId: Number(category.id)}}).get({on_Error: {...everything}, on_StorageCategoryFormFieldGenerator: {...everything}});
           }
           notifications.success('Category created successfully !');
@@ -126,9 +132,11 @@
         if (category.__typename === 'StorageCategory') {
           await loadCategoriesFromDatabase();
           for (let field of formInheritedFields) {
+            if (field.ignore) continue;
             await client.chain.mutation.CreateStorageCategoryFormFieldGenerator({input: { generator: field.generator, fieldId: Number(field.id), categoryId: Number(category.id)}}).get({on_Error: {...everything}, on_StorageCategoryFormFieldGenerator: {...everything}});
           }
           for (let field of formFields) {
+            if (field.ignore) continue;
             await client.chain.mutation.CreateStorageCategoryFormFieldGenerator({input: { generator: field.generator, fieldId: Number(field.id), categoryId: Number(category.id)}}).get({on_Error: {...everything}, on_StorageCategoryFormFieldGenerator: {...everything}});
           }
           notifications.success('Category updated successfully !');
@@ -221,6 +229,8 @@
 
   function addField(field) {
     if (![...formFields, ...formInheritedFields].find(formField => formField.id === field.id)) {
+      field.generator = '';
+      field.ignore = false;
       formFields.push(field)
       form.fields.push(Number(field.id))
       formFields = formFields;
@@ -439,6 +449,9 @@
                     placeholder="Generator"
                     type="text"
                     bind:value={field.generator}
+                    on:input={() => {
+                      field.ignore = false;
+                    }}
                   />
                 </div>
               </div>
@@ -500,6 +513,9 @@
                     placeholder="Generator"
                     type="text"
                     bind:value={field.generator}
+                    on:input={() => {
+                      field.ignore = false;
+                    }}
                   />
                 </div>
               </div>
