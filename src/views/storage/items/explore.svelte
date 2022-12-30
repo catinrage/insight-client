@@ -89,7 +89,7 @@
   let editItemObject;
 
   const action = {
-    create: async () => {
+    create: async () => {absolute top-o left-0 duration-100 w-min rounded-md cursor-help group-hover:z-[1] group-hover:bg-white group-hover:p-2 group-hover:border
       for (const field of fields) {
         if (field.required && [undefined, ''].includes(fieldsBuffer[field.name])) {
           notifications.error(`Field '${field.label}' is required !`);
@@ -331,11 +331,11 @@
             class="h-[146px] relative overflow-hidden group hover:overflow-visible"
           >
             <div
-              class="absolute top-o left-0 duration-100 w-min rounded-md cursor-help group-hover:z-[1] group-hover:bg-white group-hover:p-2 group-hover:border"
+              class="absolute top-o left-0 flex flex-col duration-100 w-min rounded-md cursor-help group-hover:z-[1] group-hover:bg-white group-hover:p-2 group-hover:border"
             >
               {#each Object.keys(item.properties) as property}
                 <div
-                  class="whitespace-nowrap inline-block overflow-hidden bg-gray-100 px-2 py-1 min-w-[10rem] h-[24px] mb-1 rounded-md last-of-type:mb-0"
+                  class="whitespace-nowrap fit-content inline-block overflow-hidden bg-gray-100 px-2 py-1 min-w-[10rem] h-[24px] mb-1 rounded-md last-of-type:mb-0"
                   title={item.properties[property]}
                 >
                   <span>
