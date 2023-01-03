@@ -39,6 +39,9 @@
     await getFieldData(1);
     category = await client.chain.query.GetStorageCategory({id: pointer}).get({ name: true, fields: {...everything}, inheritedFields: {...everything}, nestedItems: {...everything, category: { name: true, parent: { name: true } }} });
     items = category.nestedItems;
+    items = items.sort((a, b) => {
+      return Number(b.updatedAt) - Number(a.updatedAt);
+    });
     resolvedItems = items;
     filters = [{ type: 'ID' }, ...category.inheritedFields, ...category.fields];
     if (!$loaded) {
