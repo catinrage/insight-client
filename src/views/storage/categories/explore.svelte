@@ -187,7 +187,10 @@
     },
   };
 
+  let loading = false;
+
   async function loadCategoriesFromDatabase() {
+    loading = true;
     categories = (await client.chain.query.GetStorageCategory({id: location.at(-1).id}).get({
       id: true,
       name: true,
@@ -209,6 +212,7 @@
     })).children.map(child => {
       return {...child, final: child.children.length ? 'Category' : 'Final'}
     });
+    loading = false;
     $loaded = true;
   }
 
@@ -246,6 +250,20 @@
 </script>
 
 <div class="h-full">
+  {#if loading}
+    <div class="absolute left-0 top-0 w-full h-full bg-[#fff9] z-[9]">
+      <svg class="spinner" viewBox="0 0 50 50">
+        <circle
+          class="path"
+          cx="25"
+          cy="25"
+          r="20"
+          fill="none"
+          stroke-width="5"
+        />
+      </svg>
+    </div>
+  {/if}
   <div class="flex gap-2 p-2 pb-0 flex-wrap text-xs">
     <div class="flex gap-2 text-xs">
       {#each location as loc}
@@ -583,3 +601,42 @@
     </Modal>
   {/if}
 </div>
+
+<style>
+  .spinner {
+    animation: rotate 2s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -25px 0 0 -25px;
+    width: 50px;
+    height: 50px;
+  }
+
+  .spinner .path {
+    stroke: #eee;
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+  }
+
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes dash {
+    0% {
+      stroke-dasharray: 1, 150;
+      stroke-dashoffset: 0;
+    }
+    50% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -35;
+    }
+    100% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -124;
+    }
+  }
+</style>
