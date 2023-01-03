@@ -41,6 +41,9 @@
     items = category.nestedItems;
     resolvedItems = items;
     filters = [{ type: 'ID' }, ...category.inheritedFields, ...category.fields];
+    if (!$loaded) {
+      checkForData();
+    }
     $loaded = true;
   };
 
@@ -291,11 +294,16 @@
   }
 
   // [=- DATA -=]
-  if ($data) {
-    if ($data.categoryId)
-      pointer = Number($data.categoryId);
-    if ($data.insert)
-      modal.create(Number($data.insert));
+  function checkForData() {
+    if ($data) {
+      if ($data.categoryId)
+        pointer = Number($data.categoryId);
+      if ($data.insert)
+        modal.create(Number($data.insert));
+      if ($data.itemId) {
+        filters.find(filter => filter.type === 'ID').value = $data.itemId;
+      }
+    }
   }
 
 </script>

@@ -31,89 +31,109 @@
     var sec = a.getSeconds();
     var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
     return time;
-}
+  }
+
+  async function deleteRecord(id) {
+    let confirmation = await prompt.show({
+        message: 'Are you sure you want to delete this record ?',
+        options: ['yes', 'cancel'],
+        icon: 'trash-bin',
+        safe: {
+          word: 'confirm',
+          placeholder: `Type 'confirm'`,
+          cancel: 1,
+        },
+      });
+      if (confirmation === 'yes') {
+        const record = await client.chain.mutation.DeleteStorageItemRecord({id: Number(id)}).get({on_Error: {...everything}, on_StorageItemRecord: {...everything}});
+        if (record.__typename === 'StorageItemRecord') {
+          await loadRecordsDatabase();
+          notifications.success('Record deleted successfully !');
+        } else {
+          notifications.error('An error occurred while deleting record !')
+        }
+      }
+  }
 
 </script>
 
-<div class="flex flex-col text-xs overflow-x-hidden">
-  <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-    <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-      <div class="overflow-hidden">
-        <table class="min-w-full">
-          <thead class="bg-white border-b">
-            <tr>
-              <th
-                scope="col"
-                class="text-sm font-medium text-gray-900 px-6 py-2 text-left"
-              >
-                #
-              </th>
-              <th
-                scope="col"
-                class="text-sm font-medium text-gray-900 px-6 py-2 text-left"
-              >
-                Item ID
-              </th>
-              <th
-                scope="col"
-                class="text-sm font-medium text-gray-900 px-6 py-2 text-left"
-              >
-                Quantity
-              </th>
-              <th
-                scope="col"
-                class="text-sm font-medium text-gray-900 px-6 py-2 text-left"
-              >
-                Description
-              </th>
-              <th
-                scope="col"
-                class="text-sm font-medium text-gray-900 px-6 py-2 text-left"
-              >
-                Date
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each records as record}
-              <tr
-                class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100"
-              >
-                <td
-                  class="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900"
-                  >{record.id}
-                </td>
-                <td
-                  class="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap"
-                >
-                  {record.item.id}
-                </td>
-                <td
-                  class="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap"
-                >
-                  <div
-                    class:text-green-600={record.quantity > 0}
-                    class:text-red-600={record.quantity < 0}
-                    class=" px-3 rounded"
-                  >
-                    {record.quantity}
-                  </div>
-                </td>
-                <td
-                  class="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap"
-                >
-                  {record.description}
-                </td>
-                <td
-                  class="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap"
-                >
-                  {timeConverter(+record.createdAt)}
-                </td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
+<div class="p-2 text-xs">
+  <div class="flex gap-2 font-semibold">
+    <div class="bg-gray-100 p-1 px-3 rounded w-[calc((100%-2.5rem)/6*0.3)]">
+      #
     </div>
+    <div class="bg-gray-100 p-1 px-3 rounded w-[calc((100%-2.5rem)/6)]">
+      Item ID
+    </div>
+    <div class="bg-gray-100 p-1 px-3 rounded w-[calc((100%-2.5rem)/6*0.5)]">
+      Quantity
+    </div>
+    <div class="bg-gray-100 p-1 px-3 rounded w-[calc((100%-2.5rem)/6*2)] ">
+      Description
+    </div>
+    <div class="bg-gray-100 p-1 px-3 rounded w-[calc((100%-2.5rem)/6*1.2)]">
+      Date
+    </div>
+    <div class="bg-gray-100 p-1 px-3 rounded w-[calc((100%-2.5rem)/6)]">
+      Delete
+    </div>
+  </div>
+  <div class="flex flex-col gap-2 mt-2">
+    {#each records as record}
+      <div class="flex gap-2 bg-gray-50 rounded hover:bg-gray-100">
+        <div class="p-1 px-3 rounded w-[calc((100%-2.5rem)/6*0.3)]">
+          {record.id}
+        </div>
+        <div class="p-1 px-3 rounded w-[calc((100%-2.5rem)/6)]">
+          <span>
+            {record.item.id}
+          </span>
+          <span
+            class="ml-1 bg-green-300 duration-50 cursor-pointer rounded text-white px-0.5 hover:bg-green-400"
+            on:click={() => {
+              window.load('Items/Explore', { itemId: record.item.id });
+            }}
+          >
+            <ion-icon class="relative top-0.5" name="arrow-redo" />
+            Show
+          </span>
+        </div>
+        <div class="p-1 px-3 rounded w-[calc((100%-2.5rem)/6*0.5)]">
+          {#if record.quantity > 0}
+            <ion-icon
+              class="relative top-[2px] text-blue-300"
+              name="add-circle"
+            />
+          {:else}
+            <ion-icon
+              class="relative top-[2px] text-red-300"
+              name="remove-circle"
+            />
+          {/if}
+          <span>
+            {Math.abs(record.quantity)}
+          </span>
+        </div>
+        <div
+          class="p-1 px-3 rounded w-[calc((100%-2.5rem)/6*2)] whitespace-nowrap overflow-hidden text-ellipsis"
+          title={record.description}
+        >
+          {record.description}
+        </div>
+        <div class="p-1 px-3 rounded w-[calc((100%-2.5rem)/6*1.2)]">
+          {timeConverter(+record.createdAt)}
+        </div>
+        <div class="p-1 px-3 rounded w-[calc((100%-2.5rem)/6)]">
+          <span
+            class="px-1 bg-red-300 text-white rounded duration-50 cursor-pointer hover:bg-red-400"
+            on:click={() => {
+              deleteRecord(record.id);
+            }}
+          >
+            <ion-icon class="relative top-[2px]" name="trash-bin" />
+          </span>
+        </div>
+      </div>
+    {/each}
   </div>
 </div>
