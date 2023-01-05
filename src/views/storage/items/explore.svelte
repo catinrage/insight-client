@@ -436,7 +436,7 @@
     </div>
     <div class="text-sm font-bold border-b border-dashed pb-1">FILTERS</div>
     <div class="flex flex-col h-full overflow-y-auto gap-2">
-      {#each filters as filter}
+      {#each filters as filter (filter)}
         {#if filter.type === 'ID'}
           <div class="flex gap-1 text-xs w-full flex-col">
             <div class="font-medium">ID</div>
